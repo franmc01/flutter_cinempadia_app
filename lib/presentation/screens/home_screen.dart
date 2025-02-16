@@ -1,6 +1,8 @@
 import 'package:app/presentation/providers/movies_providers.dart';
 import 'package:app/presentation/providers/movies_slideshow_provider.dart';
 import 'package:app/presentation/widgets/custom_appbar.dart';
+import 'package:app/presentation/widgets/custom_botton_navigation.dart';
+import 'package:app/presentation/widgets/movies_horizontal_listview.dart';
 import 'package:app/presentation/widgets/movies_slideshow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,7 +14,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: _HomeView());
+    return const Scaffold(
+        body: _HomeView(), bottomNavigationBar: CustomBottonNavigation());
   }
 }
 
@@ -33,13 +36,18 @@ class _HomeViewState extends ConsumerState<_HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    // final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
-    final nowPlayingMovies = ref.watch(moviesSlideshowProvider);
+    final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
+    final nowPlayingSlideMovies = ref.watch(moviesSlideshowProvider);
 
     return Column(
       children: [
         CustomAppbar(),
-        MoviesSlideshow(movies: nowPlayingMovies)
+        MoviesSlideshow(movies: nowPlayingSlideMovies),
+        MovieHorizontalListview(
+          movies: nowPlayingMovies,
+          title: 'In cinema',
+          loadNextPage: () => ref.read(nowPlayingMoviesProvider.notifier).loadNextPage(),
+        )
       ],
     );
   }
