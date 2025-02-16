@@ -5,7 +5,7 @@ class TheMovieDbMovie {
     final String backdropPath;
     final List<int> genreIds;
     final int id;
-    final OriginalLanguage originalLanguage;
+    final String originalLanguage;
     final String originalTitle;
     final String overview;
     final double popularity;
@@ -38,7 +38,7 @@ class TheMovieDbMovie {
         backdropPath: json["backdrop_path"] ?? '',
         genreIds: List<int>.from(json["genre_ids"].map((x) => x)),
         id: json["id"],
-        originalLanguage: originalLanguageValues.map[json["original_language"]]!,
+        originalLanguage: json["original_language"],
         originalTitle: json["original_title"],
         overview: json["overview"] ?? '',
         popularity: json["popularity"]?.toDouble(),
