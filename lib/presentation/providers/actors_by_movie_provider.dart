@@ -6,14 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 typedef GetActorCallback = Future<List<Actor>> Function(String movieId);
 
 class ActorByMovieNotifier extends StateNotifier<Map<String, List<Actor>>> {
-  final GetActorCallback getActor;
-  ActorByMovieNotifier({required this.getActor}) : super({});
+  final GetActorCallback getActors;
+  ActorByMovieNotifier({required this.getActors}) : super({});
 
-  Future<void> loadActor(String movieId) async {
+  Future<void> loadActors(String movieId) async {
     if (state[movieId] != null) return;
 
-    final actor = await getActor(movieId); 
-    state = {...state, movieId: actor};
+    final List<Actor> actors = await getActors(movieId); 
+    state = {...state, movieId: actors};
   }
 }
 
@@ -21,5 +21,5 @@ class ActorByMovieNotifier extends StateNotifier<Map<String, List<Actor>>> {
 final actorByMovieProvider = StateNotifierProvider<ActorByMovieNotifier, Map<String, List<Actor>>>((ref){
   final actorRepository = ref.watch(actorRepositoryProvider);
 
-  return ActorByMovieNotifier(getActor: actorRepository.getActorsByMovie);
+  return ActorByMovieNotifier(getActors: actorRepository.getActorsByMovie);
 });
