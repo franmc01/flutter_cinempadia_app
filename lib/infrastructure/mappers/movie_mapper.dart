@@ -21,7 +21,7 @@ class MovieMapper {
       overview: moviedb.overview,
       popularity: moviedb.popularity,
       posterPath: _getImageUrl(moviedb.posterPath),
-      releaseDate: moviedb.releaseDate,
+      releaseDate: moviedb.releaseDate ?? DateTime.now(),
       title: moviedb.title,
       video: moviedb.video,
       voteAverage: moviedb.voteAverage,
