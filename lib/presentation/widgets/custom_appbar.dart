@@ -1,7 +1,9 @@
+import 'package:app/domain/entities/movie.dart';
 import 'package:app/presentation/delegates/search_movie_delegate.dart';
-import 'package:app/presentation/providers/movies_repository_provider.dart';
+import 'package:app/presentation/providers/search_query_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class CustomAppbar extends ConsumerWidget {
   const CustomAppbar({super.key});
@@ -14,28 +16,44 @@ class CustomAppbar extends ConsumerWidget {
     return SafeArea(
       bottom: false,
       child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          child: Row(
-            spacing: 8,
-            children: [
-              Icon(Icons.movie_creation_outlined, color: colors.primary),
-              Text('Cinemapedia', style: titleStyle),
-              Spacer(),
-              Positioned(
-                child: IconButton(
-                    onPressed: () {
-                      final movieRepository = ref.read(movieRepositoryProvider);
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: Row(
+          spacing: 8,
+          children: [
+            Icon(Icons.movie_creation_outlined, color: colors.primary),
+            Text('Cinemapedia', style: titleStyle),
+            Spacer(),
+            Positioned(
+              child: IconButton(
+                onPressed: () {
+                  final searchedMovies = ref.read(searchedMoviesProvider);
+                  final searchQuery = ref.read(searchQueryProvider);
 
-                      showSearch(
-                          context: context,
-                          delegate: SearchMovieDelegate(
-                              searchMovies: movieRepository.searchMovies)
-                          );
+                  showSearch<Movie?>(
+                    query: searchQuery,
+                    context: context,
+                    delegate: SearchMovieDelegate(
+                      initialMovies: searchedMovies,
+                      searchMovies: ref
+                          .read(searchedMoviesProvider.notifier)
+                          .searchedMoviesByQuery,
+                    ),
+                  ).then(
+                    (movie) {
+                      if (movie == null) return;
+
+                      if (context.mounted) {
+                        context.push('/movie/${movie.id}');
+                      }
                     },
-                    icon: Icon(Icons.search)),
-              )
-            ],
-          )),
+                  );
+                },
+                icon: Icon(Icons.search),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
